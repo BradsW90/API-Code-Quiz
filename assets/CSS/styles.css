@@ -9,7 +9,10 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 40px;
+  width: 1350px;
+  margin: auto;
+  margin-bottom: 30px;
+  font-size: 18px;
 }
 
 header a {
@@ -27,7 +30,7 @@ header a {
 
 #quiz-container {
   border: 1px solid black;
-  height: 500px;
+  height: 600px;
   width: 900px;
   margin: auto;
   text-align: center;
@@ -85,4 +88,7 @@ header a {
   border-top: 3px solid rgba(50, 50, 50, 0.25);
   margin: auto;
   margin-top: 30px;
+  opacity: 0;
+  text-align: left;
+  color: rgba(50, 50, 50, 0.25);
 }
