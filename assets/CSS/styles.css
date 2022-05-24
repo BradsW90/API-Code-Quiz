@@ -31,10 +31,7 @@ header a {
   width: 900px;
   margin: auto;
   text-align: center;
-}
-
-#quiz-title {
-  font-size: 50px;
+  font-size: 40px;
 }
 
 #quiz-container p {
@@ -44,7 +41,7 @@ header a {
   margin: auto;
 }
 
-#quiz-container button {
+#quiz-start {
   height: 50px;
   width: 140px;
   font-size: 20px;
@@ -53,4 +50,39 @@ header a {
   border-style: none;
   color: white;
   margin-top: 50px;
+}
+
+#quiz-start:hover {
+  background-color: rgb(75, 75, 220);
+}
+
+#limit {
+  width: 700px;
+  margin: auto;
+}
+
+#limit h3 {
+  text-align: left;
+}
+
+.selection {
+  display: block;
+  border-style: none;
+  width: 200px;
+  height: 50px;
+  color: white;
+  background-color: rgb(70, 70, 175);
+  border-radius: 15px;
+  margin: 10px 10px 10px 0px;
+  font-size: 20px;
+}
+
+.selection:hover {
+  background-color: rgb(75, 75, 220);
+}
+
+#result {
+  border-top: 3px solid rgba(50, 50, 50, 0.25);
+  margin: auto;
+  margin-top: 30px;
 }

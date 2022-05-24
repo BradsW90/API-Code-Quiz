@@ -4,23 +4,20 @@ var quiz = document.getElementById("quiz-container");
 var indexCounter = 0;
 var questions = [
   {
-    disc: "this is a test question one",
-    answerOne: "answer one",
-    answerTwo: "answer two",
-    answerThree: "answer three",
-    answerFour: "answer four",
-    selection: function (arg) {
-      if (arg === "answer one") {
-      } else {
-      }
-    },
+    disc: "Who is Natsu's Best Friend?",
+    optionOne: "1.Mira Jane",
+    optionTwo: "2.Laxus Dreyar",
+    optionThree: "3.Happy",
+    optionFour: "4.Freid Justine",
+    answer: 2,
   },
   {
     disc: "this is a test qusetion two",
-    answerOne: "answer one",
-    answerTwo: "answer two",
-    answerThree: "answer three",
-    answerFour: "answer four",
+    optionOne: "answer one",
+    optionTwo: "answer two",
+    optionThree: "answer three",
+    optionFour: "answer four",
+    answer: 3,
   },
 ];
 
@@ -43,35 +40,57 @@ var quizStart = function () {
   return btn;
 };
 
-var question = function () {
+var create = function () {
   var quiz = document.getElementById("quiz-container");
   quiz.parentNode.removeChild(quiz);
   var newQuiz = document.createElement("div");
   newQuiz.setAttribute("id", "quiz-container");
   document.body.appendChild(newQuiz);
-  var nextQuestion = questions[indexCounter];
+  var questionLimit = document.createElement("div");
+  questionLimit.setAttribute("id", "limit");
+  newQuiz.appendChild(questionLimit);
   var disc = document.createElement("h3");
-  disc.setAttribute("id", "disc");
-  disc.innerText = nextQuestion.disc;
-  newQuiz.appendChild(disc);
-  var selections = document.createElement("div");
-  newQuiz.appendChild(selections);
+  disc.innerText = questions[indexCounter].disc;
+  questionLimit.appendChild(disc);
+  createOptions();
+  var result = document.createElement("div");
+  result.setAttribute("id", "result");
+  questionLimit.appendChild(result);
   indexCounter++;
 };
 
-var options = function () {
-  for (i = 0; i < answerSelections; i++) {
-    var answer = document.createElement("button");
-    answer.dataset.answer = answerSelections[i];
-    answer.setAttribute("class", "selection");
-    answer.innerText = nextQuestion.answerFour;
-    selections.appendChild(ansFour);
+var createOptions = function () {
+  var container = document.getElementById("limit");
+  var options = [
+    questions[indexCounter].optionOne,
+    questions[indexCounter].optionTwo,
+    questions[indexCounter].optionThree,
+    questions[indexCounter].optionFour,
+  ];
+  for (i = 0; i < 4; i++) {
+    var option = document.createElement("button");
+    option.dataset.answer = i;
+    option.setAttribute("class", "selection");
+    option.innerText = options[i];
+    container.appendChild(option);
+    option.addEventListener("click", function (event) {
+      var clicked = parseInt(event.target.dataset.answer);
+      var rightIndex = indexCounter - 1;
+      var right = questions[rightIndex].answer;
+      if (clicked === right) {
+        console.log("Correct!");
+        create();
+      } else {
+        console.log("Wrong!");
+        create();
+      }
+    });
   }
 };
 var btn = quizStart();
 
 btn.addEventListener("click", function () {
-  question();
+  create();
   var timerId = setInterval(function () {
     time--;
     document.getElementById("timer").innerText = time;
