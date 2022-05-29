@@ -1,7 +1,7 @@
 //set beginning time
-var time = 60;
-document.getElementById("timer").innerText = time;
-var quiz = document.getElementById("quiz-container");
+var time = 120;
+document.getElementById("timer").innerText = time + "Sec's";
+var checkHighscore = document.getElementById("check-highscore");
 //sets global index for object array
 var indexCounter = 0;
 //object array containing complete information on each question
@@ -40,10 +40,10 @@ var questions = [
   },
   {
     disc: "How many monsters did Erza defeat during the tournament of power?",
-    optionOne: "1.14",
-    optionTwo: "2.56",
-    optionThree: "3.30",
-    optionFour: "4.All of the above",
+    optionOne: "1. 14",
+    optionTwo: "2. 56",
+    optionThree: "3. 30",
+    optionFour: "4. All of the above",
     answer: 3,
   },
   {
@@ -71,54 +71,155 @@ var questions = [
     answer: 1,
   },
   {
-    disc: "",
-    optionOne: "",
-    optionTwo: "",
-    optionThree: "",
-    optionFour: "",
+    disc: "What is Guildarts magic?",
+    optionOne: "Disassembly Magic",
+    optionTwo: "Gravity Magic",
+    optionThree: "Speed Magic",
+    optionFour: "Earth Magic",
     answer: 0,
   },
   {
-    disc: "",
-    optionOne: "",
-    optionTwo: "",
-    optionThree: "",
-    optionFour: "",
-    answer: 0,
+    disc: "When Mavis casts her protect spell how many years is skipped?",
+    optionOne: "10",
+    optionTwo: "20",
+    optionThree: "7",
+    optionFour: "14",
+    answer: 2,
   },
 ];
 
+//displays highscores from local storage
+var checkHighscores = function () {
+  //grabs highscores from local storage and parses it.
+  var currentScores = JSON.parse(localStorage.getItem("currentScores"));
+
+  //page reset start
+  var quiz = document.getElementById("quiz-container");
+  quiz.parentNode.removeChild(quiz);
+
+  var newQuiz = document.createElement("div");
+  newQuiz.setAttribute("id", "quiz-container");
+  document.body.appendChild(newQuiz);
+
+  var questionLimit = document.createElement("div");
+  questionLimit.setAttribute("id", "limit");
+  questionLimit.setAttribute("class", "end-limit");
+  newQuiz.appendChild(questionLimit);
+  //page reset end
+
+  //generation of highscore page
+  var highscore = document.createElement("h2");
+  highscore.innerText = "High scores";
+  questionLimit.appendChild(highscore);
+
+  var scoreContainer = document.createElement("div");
+  scoreContainer.setAttribute("id", "score-container");
+  questionLimit.appendChild(scoreContainer);
+
+  var scoreBtns = document.createElement("div");
+  scoreBtns.setAttribute("id", "score-btns");
+  questionLimit.appendChild(scoreBtns);
+
+  var backBtn = document.createElement("button");
+  backBtn.setAttribute("class", "selection");
+  backBtn.dataset.got = "back";
+  backBtn.innerText = "Go Back";
+  scoreBtns.appendChild(backBtn);
+
+  var clearScores = document.createElement("button");
+  clearScores.setAttribute("class", "selection");
+  clearScores.dataset.got = "clear";
+  clearScores.innerText = "Clear Scores";
+  scoreBtns.appendChild(clearScores);
+
+  //loops through highscores and appends them individually
+  for (i = 0; i < currentScores.length; i++) {
+    var score = document.createElement("p");
+    score.innerText = currentScores[i];
+    scoreContainer.appendChild(score);
+  }
+
+  scoreBtns.addEventListener("click", function (event) {
+    var selected = event.target;
+    //check if selected button was go back
+    if (selected.dataset.got === "back") {
+      //setup for page transition
+      var quiz = document.getElementById("quiz-container");
+      quiz.parentNode.removeChild(quiz);
+      var newQuiz = document.createElement("div");
+      newQuiz.setAttribute("id", "quiz-container");
+      document.body.appendChild(newQuiz);
+      //resets for quiz
+      time = 120;
+      indexCounter = 0;
+      //calling for program to restart
+      quizStart();
+      //clear local storage and reset empty highscore array then reload highscore page
+    } else if (selected.dataset.got === "clear") {
+      localStorage.clear();
+      localStorage.setItem("currentScores", "[]");
+      checkHighscores();
+    }
+  });
+};
+
+//starts and monitors timer and starts first question
+var timer = function () {
+  create();
+  var timerId = setInterval(function () {
+    time--;
+    document.getElementById("timer").innerText = time + "Sec's";
+    //when time ends stop timer and call end function
+    if (time === 1) {
+      document.getElementById("timer").innerText = time + "Sec";
+    } else if (time === 0) {
+      clearInterval(timerId);
+      endQuiz();
+    }
+  }, 1000);
+};
+
 //fires on page load to populate start screen
 var quizStart = function () {
+  var quiz = document.getElementById("quiz-container");
+
   var quizTitle = document.createElement("h1");
   quizTitle.setAttribute("id", "quiz-title");
   quizTitle.innerText = "How much do you know about Fairy Tale?";
   quiz.appendChild(quizTitle);
+
   var quizDisc = document.createElement("p");
   quizDisc.innerText =
     "Try to answer these questions about the anime series Fariy Tale. Keep in mind that wrong answers will penalize your time remaining.";
   quiz.appendChild(quizDisc);
+
   var btnStart = document.createElement("button");
   btnStart.setAttribute("id", "quiz-start");
   btnStart.innerText = "Start Quiz!";
   quiz.appendChild(btnStart);
-  var btn = document.getElementById("quiz-start");
-  return btn;
+
+  btnStart.addEventListener("click", function () {
+    timer();
+  });
 };
 
 //removes previous content from page and populates container and question
 var create = function () {
   var quiz = document.getElementById("quiz-container");
   quiz.parentNode.removeChild(quiz);
+
   var newQuiz = document.createElement("div");
   newQuiz.setAttribute("id", "quiz-container");
   document.body.appendChild(newQuiz);
+
   var questionLimit = document.createElement("div");
   questionLimit.setAttribute("id", "limit");
   newQuiz.appendChild(questionLimit);
+
   var disc = document.createElement("h3");
   disc.innerText = questions[indexCounter].disc;
   questionLimit.appendChild(disc);
+
   //calls function to handle answer generation
   createOptions();
   //populates div that appears on answer
@@ -155,6 +256,13 @@ var createOptions = function () {
       if (clicked === right) {
         result.style.opacity = "1";
         result.innerText = '"Correct!"';
+        if (questions.length === indexCounter) {
+          setTimeout(function () {
+            clearInterval(1);
+            endQuiz();
+          }, 1000);
+          return;
+        }
         //pause then start next question
         setTimeout(function () {
           create();
@@ -163,6 +271,14 @@ var createOptions = function () {
       } else {
         result.style.opacity = "1";
         result.innerText = '"Wrong!"';
+        time = time - 5;
+        if (questions.length === indexCounter) {
+          setTimeout(function () {
+            clearInterval(1);
+            endQuiz();
+          }, 1000);
+          return;
+        }
         //pause then start next question
         setTimeout(function () {
           create();
@@ -172,18 +288,66 @@ var createOptions = function () {
   }
 };
 
-//start of quiz
-var btn = quizStart();
+var endQuiz = function () {
+  //page reset start
+  var quiz = document.getElementById("quiz-container");
+  quiz.parentNode.removeChild(quiz);
 
-//on click starts quiz timer and starts first question
-btn.addEventListener("click", function () {
-  create();
-  var timerId = setInterval(function () {
-    time--;
-    document.getElementById("timer").innerText = time;
-    //when time ends stop timer and call end function
-    if (time === 0) {
-      clearInterval(timerId);
+  var newQuiz = document.createElement("div");
+  newQuiz.setAttribute("id", "quiz-container");
+  document.body.appendChild(newQuiz);
+
+  var questionLimit = document.createElement("div");
+  questionLimit.setAttribute("id", "limit");
+  questionLimit.setAttribute("class", "end-limit");
+  newQuiz.appendChild(questionLimit);
+  //page reset end
+
+  //end of quiz page generation
+  var endTitle = document.createElement("h2");
+  endTitle.innerText = "All done!";
+  questionLimit.appendChild(endTitle);
+
+  var highscore = document.createElement("p");
+  highscore.innerText = "Your final score is " + time;
+  questionLimit.appendChild(highscore);
+
+  var enter = document.createElement("label");
+  enter.setAttribute("for", "initals");
+  enter.setAttribute("name", "enter");
+  enter.setAttribute("id", "highscore");
+  enter.innerText = "Enter initals:";
+  questionLimit.appendChild(enter);
+
+  var initalInput = document.createElement("input");
+  initalInput.setAttribute("id", "ititals");
+  questionLimit.appendChild(initalInput);
+
+  var subBtn = document.createElement("button");
+  subBtn.setAttribute("id", "sub-btn");
+  subBtn.innerText = "Submit";
+  questionLimit.appendChild(subBtn);
+
+  subBtn.addEventListener("click", function () {
+    //grabs user input
+    var newHighscore = document.getElementById("ititals").value;
+    //checks for existing highscore in local storage
+    if (localStorage.getItem("currentScores") == null) {
+      //if non generates empty array
+      localStorage.setItem("currentScores", "[]");
     }
-  }, 1000);
+
+    //adds user to highscore then stringify and update local storage
+    var highscores = JSON.parse(localStorage.getItem("currentScores"));
+    highscores.push(newHighscore + ": " + time);
+    localStorage.setItem("currentScores", JSON.stringify(highscores));
+
+    checkHighscores();
+  });
+};
+//start of quiz
+quizStart();
+
+checkHighscore.addEventListener("click", function () {
+  checkHighscores();
 });

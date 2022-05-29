@@ -92,3 +92,43 @@ header a {
   text-align: left;
   color: rgba(50, 50, 50, 0.25);
 }
+
+.end-limit {
+  padding-top: 150px;
+  text-align: left;
+}
+
+.end-limit h2,
+.end-limit label {
+  margin: 10px;
+}
+
+.end-limit h2 {
+  font-size: 40px;
+}
+
+.end-limit label {
+  font-size: 30px;
+}
+
+#sub-btn {
+  border: none;
+  font-size: 20px;
+  background-color: rgb(70, 70, 175);
+  color: white;
+  border-radius: 10px;
+  margin: 5px;
+  width: 100px;
+}
+
+#sub-btn:hover {
+  background-color: rgb(75, 75, 220);
+}
+
+#score-container {
+  background-color: rgb(190, 190, 190);
+}
+
+#score-btns {
+  display: flex;
+}
