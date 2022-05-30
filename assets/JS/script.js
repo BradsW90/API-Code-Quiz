@@ -152,6 +152,7 @@ var checkHighscores = function () {
       //resets for quiz
       time = 120;
       indexCounter = 0;
+      document.getElementById("timer").innerText = time + "Sec's";
       //calling for program to restart
       quizStart();
       //clear local storage and reset empty highscore array then reload highscore page
@@ -177,6 +178,7 @@ var timer = function () {
       endQuiz();
     }
   }, 1000);
+  console.log("timerId ", timerId);
 };
 
 //fires on page load to populate start screen
@@ -196,11 +198,11 @@ var quizStart = function () {
   var btnStart = document.createElement("button");
   btnStart.setAttribute("id", "quiz-start");
   btnStart.innerText = "Start Quiz!";
+  btnStart.onclick = timer;
   quiz.appendChild(btnStart);
-
-  btnStart.addEventListener("click", function () {
+  /*btnStart.addEventListener("click", function () {
     timer();
-  });
+  });*/
 };
 
 //removes previous content from page and populates container and question
@@ -258,7 +260,9 @@ var createOptions = function () {
         result.innerText = '"Correct!"';
         if (questions.length === indexCounter) {
           setTimeout(function () {
-            clearInterval(1);
+            for (i = 0; i < 100; i++) {
+              window.clearInterval(i);
+            }
             endQuiz();
           }, 1000);
           return;
@@ -274,7 +278,9 @@ var createOptions = function () {
         time = time - 5;
         if (questions.length === indexCounter) {
           setTimeout(function () {
-            clearInterval(1);
+            for (i = 0; i < 100; i++) {
+              window.clearInterval(i);
+            }
             endQuiz();
           }, 1000);
           return;
@@ -288,7 +294,7 @@ var createOptions = function () {
   }
 };
 
-var endQuiz = function () {
+var endQuiz = function (score) {
   //page reset start
   var quiz = document.getElementById("quiz-container");
   quiz.parentNode.removeChild(quiz);
@@ -349,5 +355,11 @@ var endQuiz = function () {
 quizStart();
 
 checkHighscore.addEventListener("click", function () {
+  if (indexCounter > 0) {
+    var quit = window.confirm("Do you want to quit the quiz?");
+    if (quit) {
+      time = 1;
+    }
+  }
   checkHighscores();
 });
